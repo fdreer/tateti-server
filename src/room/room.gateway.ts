@@ -29,17 +29,13 @@ export class RoomGateway
 
   afterInit() {}
 
-  handleConnection(socket: Socket) {
-    this.log.log(`Client connected: ${socket.id}`)
-  }
+  handleConnection() {}
 
-  async handleDisconnect(@ConnectedSocket() socket: Socket) {
-    // const roomId = getRoomsFromSocket(socket) // --> creo que no tiene sala porque ya se desconectó
-    // console.log(roomId)
-    // this.log.verbose(`RoomID: ${roomId}`)
-    // // await socket.leave(roomId)
-    // this.log.verbose(`Client disconnected: ${socket.id}`)
-    // this.io.to(roomId).emit('room_left')
+  handleDisconnect() {}
+
+  @SubscribeMessage('event_hello_world')
+  async handleTestRoom(@ConnectedSocket() socket: Socket) {
+    socket.emit('hello_world', { body: 'Hello World!' })
   }
 
   @SubscribeMessage('event_create')
@@ -60,7 +56,6 @@ export class RoomGateway
   @SubscribeMessage('event_leave')
   async handleLeaveRoom(@ConnectedSocket() socket: Socket) {
     // --> creo que no se ejecuta cada vez que un cliente abandona el navegador
-    this.log.verbose('Se ejecuta event_leave')
     const roomId = getRoomsFromSocket(socket)[0]
     await socket.leave(roomId)
     this.io.to(roomId).emit('room_left')

@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { Socket, Server } from 'socket.io'
 import { assignRandomProperties, getRoomsFromSocket } from './utils'
 
 @Injectable()
 export class RoomService {
+  private readonly log = new Logger(RoomService.name)
+
   async create(socket: Socket) {
     const roomId = crypto.randomUUID().split('-')[0]
     await socket.join(roomId)
@@ -33,8 +35,6 @@ export class RoomService {
 
     if (io.sockets.adapter.rooms.get(roomId).size === 2) {
       const randomProperties = assignRandomProperties()
-      console.log(randomProperties)
-
       socket.emit('start_game', randomProperties[0])
       socket.to(roomId).emit('start_game', randomProperties[1])
     }
