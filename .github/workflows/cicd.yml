@@ -27,15 +27,15 @@ jobs:
         with:
           context: .
           push: true
-          tags: fdreer/app-notes:latest
+          tags: fdreer/tateti-server:latest
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Pull image from docker hub
-        run: docker pull fdreer/app-notes:latest
+        run: docker pull fdreer/tateti-server:latest
       - name: Delete old container
-        run: docker rm -f appnotes-container
+        run: docker rm -f tateti-server-container
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name appnotes-container fdreer/app-notes
+        run: docker run -d -p 8080:8080 --name tateti-server-container fdreer/tateti-server
