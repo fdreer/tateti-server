@@ -1,0 +1,41 @@
+name: CICD
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+          node-version-file: 'package.json'
+      - name: Install dependencies
+        run: npm ci
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: fdreer/app-notes:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull fdreer/app-notes:latest
+      - name: Delete old container
+        run: docker rm -f appnotes-container
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name appnotes-container fdreer/app-notes
