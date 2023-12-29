@@ -31,7 +31,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [tateti-server]
     steps:
       - name: Pull image from docker hub
         run: docker pull fdreer/tateti-server:latest
