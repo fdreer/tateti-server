@@ -16,7 +16,7 @@ export const assignRandomProperties = () => {
   // Genera un símbolo aleatorio 'x' o 'o'
   const symbol = Math.random() < 0.5 ? Turn.X : Turn.O
 
-  // Retorna el objeto con las propiedades asignadas
+  // Retorna el objeto con las propiedades asignadass
   return [
     { isMyTurn, symbol },
     { isMyTurn: !isMyTurn, symbol: symbol === Turn.X ? Turn.O : Turn.X }
